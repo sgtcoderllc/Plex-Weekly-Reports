@@ -3,7 +3,7 @@
 require_once("includes/common.php");
 
 
-$html=file_get_contents(HTTP_HTTPS.$_SERVER['SERVER_NAME']."/plex/");
+$html=file_get_contents(PLEX_REPORT_URL);
 
 //send email
 $mailgun = new Mailgun;

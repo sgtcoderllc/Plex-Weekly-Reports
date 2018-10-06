@@ -3,6 +3,7 @@
 //PLEX
 define("PLEX_API_KEY", "");
 define("PLEX_URL", '');
+define("PLEX_REPORT_URL", HTTP_HTTPS.$_SERVER['SERVER_NAME']."/plex/");
 
 //MAILGUN EMAIL
 define("MAILGUN_KEY", '');
