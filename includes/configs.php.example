@@ -1,4 +1,10 @@
 <?php
+//STARTER DEFINES
+if($_SERVER['SERVER_PORT']=="443"){
+	define("HTTP_HTTPS", "https://");
+}else{
+	define("HTTP_HTTPS", "http://");
+}
 
 //PLEX
 define("PLEX_API_KEY", "");
