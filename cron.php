@@ -8,7 +8,7 @@ $html=file_get_contents(PLEX_REPORT_URL);
 //send email
 $mailgun = new Mailgun;
 
-$emails = getPlexEmails();
+$emails = $Core->getPlexEmails();
 
 //send seperately
 foreach($emails as $email){

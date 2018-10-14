@@ -2,14 +2,15 @@
 
 require_once("includes/common.php");
 
+
 global $new_movies, $new_episodes;
 
 $new_movies = array();
 $new_episodes = array();
 
-$sections = getXMLObject(PLEX_URL."/library/sections");
+$sections = $Core->getXMLObject(PLEX_URL."/library/sections");
 
-getDirectories($sections);
+$Core->getDirectories($sections);
 
 //echo 'new Movies';print_r2($new_movies);echo 'new episodes';print_r2($new_episodes);exit;
 
@@ -21,7 +22,7 @@ $movies_template = file_get_contents("templates/movies.php");
 if(count($new_movies)>0){
 	foreach($new_movies as $movie){
 
-		$movie_info = getMovieInfo($movie['show_id']);
+		$movie_info = $Core->getMovieInfo($movie['show_id']);
 
 		$array_map = array(
 			'title'=>$movie_info['title'],
@@ -40,7 +41,7 @@ if(count($new_movies)>0){
 			'imdb_link'=>$movie_info['imdb'],
 		);
 
-		$movies_html.= replaceMappings($movies_template, $array_map);
+		$movies_html.= $Core->replaceMappings($movies_template, $array_map);
 	}
 }else{
 	$movies_html = '<tr>
@@ -81,7 +82,7 @@ if(count($new_episodes)>0){
 			'imdb_link'=>$episode_info['imdb'],
 		);
 
-		$shows_html.= replaceMappings($shows_template, $array_map);
+		$shows_html.= $Core->replaceMappings($shows_template, $array_map);
 	}
 }else{
 	$shows_html = '<tr>
@@ -98,7 +99,7 @@ $array_map = array(
 	'shows'=>$shows_html,
 );
 
-$html = replaceMappings($html_template, $array_map);
+$html = $Core->replaceMappings($html_template, $array_map);
 
 
 echo $html;
