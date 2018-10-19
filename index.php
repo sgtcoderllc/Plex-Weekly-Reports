@@ -62,7 +62,7 @@ if(count($new_episodes)>0){
 
 		$episodes_text = implode(", ", $episodes_text);
 
-		$episode_info = getEpisodeInfo($key);
+		$episode_info = $Core->getEpisodeInfo($key);
 
 		$array_map = array(
 			'title'=>$episode_info['title'],
