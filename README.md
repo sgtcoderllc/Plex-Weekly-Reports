@@ -1,26 +1,16 @@
-[![GitHub](https://img.shields.io/github/license/MJBCode/Plex-Weekly-Reports.svg)](https://opensource.org/licenses/GPL-3.0)
-![GitHub last commit](https://img.shields.io/github/last-commit/MJBCode/Plex-Weekly-Reports.svg)
-![GitHub tag](https://img.shields.io/github/tag/MJBCode/Plex-Weekly-Reports.svg)
-
 # Plex Weekly Reports
-Plex Weekly Reports done the right way.
+> Plex Weekly Reports done the right way.
+
+[![GitHub](https://img.shields.io/github/license/MJBCode/Plex-Weekly-Reports.svg)](https://opensource.org/licenses/GPL-3.0)
+[![GitHub last commit](https://img.shields.io/github/last-commit/MJBCode/Plex-Weekly-Reports.svg)](https://github.com/MJBCode/Plex-Weekly-Reports/commits/master)
+[![GitHub tag](https://img.shields.io/github/tag/MJBCode/Plex-Weekly-Reports.svg)](https://github.com/MJBCode/Plex-Weekly-Reports/tags)
 
 ## Overview
 I started this project after messing with plexReports and Tautulli Newsletters. plexReports has many bugs and the HTML is too big for GMail. It was also written in Ruby and was not easy to modify. Even after fixing it up it still had problems. Tautulli is still too beta in order to be used as a Newsletter and due to the lack of customization. I also do not like the format of the emails and they are not responsive.
 
 I have decided to then build a reporting tool for recently added media coded in a LAMP stack environment. The reports should work in all email clients and are mobile responsive. I have tied into the Plex API, PlexTV API, OMDB, TheTVDB, and TheMovieDB to pull the reports in the past week along with all the meta data. I have also integrated with MailGun API to send out the emails.
 
-## Future Plans
-- Mandrill Integration
-- SMTP Integration
-- Direct Linking to the Plex Server to watch the media
-- Improvement and cleanup of the project
-- Integration to other API's to pull more data
-
-## License
-This project is under the GNU GENERAL PUBLIC LICENSE Version 3: https://opensource.org/licenses/GPL-3.0
-
-## How To Use
+## Installation
 This project assumes that you have general knowledge of a LAMP stack environment.
 - Simply upload the project to your public root, rename configs.php.sample to configs.php and fillout the missing information.
 - PLEX URL is your Plex URL
@@ -31,6 +21,28 @@ This project assumes that you have general knowledge of a LAMP stack environment
 ## Screenshots
 #### Email Preview
 [![Image from Gyazo](https://i.gyazo.com/148a56627e4c336c8a9ef67c24a3a310.png)](https://gyazo.com/148a56627e4c336c8a9ef67c24a3a310)
+
+## Future Plans
+- Mandrill Integration
+- SMTP Integration
+- Direct Linking to the Plex Server to watch the media
+- Improvement and cleanup of the project
+- Integration to other API's to pull more data
+
+## Meta
+Michael J Brancato – [@codermjb](https://twitter.com/codermjb) – mike@mjbcode.com
+
+Distributed under the GNU GENERAL PUBLIC LICENSE Version 3. See ``LICENSE`` for more information.
+
+[https://github.com/MJBCode/Plex-Weekly-Reports](https://github.com/MJBCode/Plex-Weekly-Reports)
+
+## Contributing
+
+1. Fork it (<https://github.com/MJBCode/Plex-Weekly-Reports/fork>)
+2. Create your feature branch (`git checkout -b feature/fooBar`)
+3. Commit your changes (`git commit -am 'Add some fooBar'`)
+4. Push to the branch (`git push origin feature/fooBar`)
+5. Create a new Pull Request
 
 ## Questions
 If you have any questions or feedback, please email me at mike@mjbcode.com
