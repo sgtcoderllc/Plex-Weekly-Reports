@@ -1,3 +1,7 @@
+[![CRAN](https://img.shields.io/cran/l/devtools.svg)](https://choosealicense.com/licenses/gpl-3.0/)
+![PHP version from PHP-Eye](https://img.shields.io/php-eye/symfony/symfony.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/google/skia.svg)
+
 # Plex Weekly Reports
 Plex Weekly Reports done the right way.
 
