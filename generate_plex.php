@@ -236,7 +236,7 @@ if(count($new_shows)>0){
 
 // Output all data
 	$duration = microtime(true) - $timer_start;
-	$duration = round($time_taken/60,2);
+	$duration = round(($duration/60),2);
 
 	$output = array(
 		'status' => 'success',
@@ -260,7 +260,7 @@ if(count($new_shows)>0){
 		exit();
 	}
 
-	plex_log('Plex Export completed in '.$time_taken.' minutes');
+	plex_log('Plex Export completed in '.$duration.' minutes');
 
 
 // Methods //////////////////////////////////////////////////////////////
