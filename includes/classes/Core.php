@@ -97,7 +97,7 @@ class Core {
 	}
 
 	public function getPlexEmails(){
-		$friends = $this->getXMLObject("https://plex.tv/api/users/?X-Plex-Token=".PLEX_API_KEY);
+		$friends = $this->getXMLObject("https://plex.tv/api/users/");
 		$friends = $friends->User;
 
 		$emails=array();
