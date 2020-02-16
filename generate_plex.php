@@ -168,8 +168,8 @@ error_reporting(E_ALL ^ E_NOTICE | E_WARNING);
 
 
 // Added to grab additional info and cleanup
-	$new_movies = $sections['sections']['movie']['items'];
-	$new_shows = $sections['sections']['show']['items'];
+	$new_movies = $sections['movie']['items'];
+	$new_shows = $sections['show']['items'];
 
 	$movies_array = array();
 	$shows_array = array();
