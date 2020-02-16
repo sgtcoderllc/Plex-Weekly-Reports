@@ -20,7 +20,7 @@ This project assumes that you have general knowledge of a LAMP stack environment
 
 ## Screenshots
 #### Email Preview
-[![Image from Gyazo](https://i.gyazo.com/148a56627e4c336c8a9ef67c24a3a310.png)](https://gyazo.com/148a56627e4c336c8a9ef67c24a3a310)
+[![Image from Gyazo](https://i.gyazo.com/ca15001b568eebbc558aa130536ebaf6.png)](https://i.gyazo.com/ca15001b568eebbc558aa130536ebaf6.png)
 
 ## Future Plans
 - Mandrill Integration
@@ -30,7 +30,7 @@ This project assumes that you have general knowledge of a LAMP stack environment
 - Integration to other API's to pull more data
 
 ## Meta
-Michael J Brancato – [@codermjb](https://twitter.com/codermjb) – mike@mjbcode.com
+Michael J Brancato – [@theveterancoder](https://github.com/theveterancoder) – mike@mjbcode.com
 
 Distributed under the GNU GENERAL PUBLIC LICENSE Version 3. See ``LICENSE`` for more information.
 
