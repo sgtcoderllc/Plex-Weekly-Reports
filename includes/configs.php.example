@@ -1,15 +1,9 @@
 <?php
-//STARTER DEFINES
-if($_SERVER['SERVER_PORT']=="443"){
-	define("HTTP_HTTPS", "https://");
-}else{
-	define("HTTP_HTTPS", "http://");
-}
 
 //PLEX
-define("PLEX_API_KEY", "");
+define("PLEX_API_KEY", '');
 define("PLEX_URL", '');
-define("PLEX_REPORT_URL", HTTP_HTTPS.$_SERVER['SERVER_NAME']."/plex/");
+define("PLEX_REPORT_URL", '');
 
 //MAILGUN EMAIL
 define("MAILGUN_KEY", '');
@@ -27,9 +21,9 @@ define("MOVIEDB_KEY", "974eddb0f95ce2b912b9b37a63358823");
 define("TVDB_KEY", "71362BFFDCA2C8CD");
 define("OMDB_KEY", "eec31b8e");
 
-//OTHER DEFINES
-if($_SERVER['SERVER_PORT']=="443"){
-	define("HTTP_HTTPS", "https://");
-}else{
-	define("HTTP_HTTPS", "http://");
-}
+//Plex CLI Options
+$options=array(
+	'token'=>PLEX_API_KEY,
+	'plex-url'=>PLEX_URL,
+	'sections'=>'Movies, TV Shows',
+);
