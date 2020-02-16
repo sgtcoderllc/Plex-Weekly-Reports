@@ -2,17 +2,20 @@
 
 require_once("includes/common.php");
 
+// Generate the json
+require_once("generate_plex.php");
 
-$html=file_get_contents(PLEX_REPORT_URL);
+// Get the html report
+$html = file_get_contents(PLEX_REPORT_URL);
 
-//send email
-$mailgun = new Mailgun;
-
+// get emails
 $emails = $Core->getPlexEmails();
 
-//send seperately
+// send email seperately
+$Mailgun = new Mailgun;
+
 foreach($emails as $email){
-	$result = $mailgun->send(array(
+	$result = $Mailgun->send(array(
 	    'from'    => EMAIL_FROM,
 	    'to'      => array($email),
 	    'cc'      => array(),
