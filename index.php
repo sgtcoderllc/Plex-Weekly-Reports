@@ -13,7 +13,7 @@ $movies_template = file_get_contents("templates/movies.php");
 
 if(count($new_movies)>0){
 	foreach($new_movies as $key => $movie){
-		$shows_html.= $Core->replaceMappings($movies_template, $movie);
+		$movies_html.= $Core->replaceMappings($movies_template, $movie);
 	}
 }else{
 	$movies_html = '
@@ -21,7 +21,7 @@ if(count($new_movies)>0){
 		    <td style="padding-bottom: 30px;">
 		        <table role="presentation" border="2" cellpadding="10" cellspacing="0" width="100%" class="bg_light">
 			        <td valign="middle">
-			          	<div class="text-blog" style="text-align: left; padding-left:25px;">
+			          	<div class="text-blog" style="text-align: center;">
 			                <h2>No New Movies</h2>
 			          	</div>
 			        </td>
@@ -42,7 +42,7 @@ if(count($new_shows)>0){
 		    <td style="padding-bottom: 30px;">
 		        <table role="presentation" border="2" cellpadding="10" cellspacing="0" width="100%" class="bg_light">
 			        <td valign="middle">
-			          	<div class="text-blog" style="text-align: left; padding-left:25px;">
+			          	<div class="text-blog" style="text-align: center;">
 			                <h2>No New TV Shows</h2>
 			          	</div>
 			        </td>
