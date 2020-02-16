@@ -19,8 +19,7 @@
         <div style="max-width: 768px; margin: 0 auto;" class="email-container">
             <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
                 <tr>
-                    <td valign="middle" class="hero bg_white" style="height: 200px;">
-                        <div class="overlay"></div>
+                    <td valign="middle" class="hero bg_dark" style="padding:25px;">
                         <table>
                             <tr>
                                 <td>
