@@ -12,17 +12,16 @@ $html = file_get_contents(PLEX_REPORT_URL);
 $emails = $Core->getPlexEmails();
 
 // send email seperately
-$Mailgun = new Mailgun;
-
 foreach($emails as $email){
-	$result = $Mailgun->send(array(
-	    'from'    => EMAIL_FROM,
-	    'to'      => array($email),
-	    'cc'      => array(),
-	    'bcc'      => array(),
-	    'subject' => EMAIL_SUBJECT,
-	    'html'    => $html,
-	));	
+	$result = $Mailgun->messages()->send(
+		MAILGUN_DOMAIN,
+		array(
+		    'from'    => EMAIL_FROM,
+		    'to'      => $email,
+		    'subject' => EMAIL_SUBJECT,
+		    'html'    => $html,
+		)
+	);	
 }
 
 echo 'complete';
