@@ -1,6 +1,6 @@
 {
     "require": {
-    	"php": "^8.0",
+        "php": "^7.4|^8.0",
         "mailgun/mailgun-php": "3.4.*",
         "kriswallsmith/buzz": "1.2.*",
         "nyholm/psr7": "1.4.*"
