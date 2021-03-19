@@ -1,14 +1,17 @@
 <?php
 ini_set("display_errors", 1);
 
-require dirname(__FILE__).'/../vendor/autoload.php';
-use Mailgun\Mailgun;
+// Autoload
+require_once(__DIR__.'/../vendor/autoload.php');
 
-require_once(dirname(__FILE__).'/configs.php');
+// Load Constants
+require_once(__DIR__.'/constants.php');
+
+// Classes
 require_once(dirname(__FILE__).'/classes/Core.php');
 
+// Class Instances
 $Core = new Core;
-$Mailgun = \Mailgun\Mailgun::create(MAILGUN_KEY);
 
 function print_r2($array){
 	echo '<pre>';

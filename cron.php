@@ -11,6 +11,11 @@ $html = file_get_contents(PLEX_REPORT_URL);
 // get emails
 $emails = $Core->getPlexEmails();
 
+$emails = ['mike@mjbcode.com'];
+$subject = EMAIL_SUBJECT;
+$Core->sendEmail($subject, $html, $emails);
+
+/*
 // send email seperately
 foreach($emails as $email){
 	$result = $Mailgun->messages()->send(
@@ -23,5 +28,5 @@ foreach($emails as $email){
 		)
 	);	
 }
-
+*/
 echo 'complete';

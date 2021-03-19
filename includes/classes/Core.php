@@ -112,4 +112,17 @@ class Core {
 
 		return $emails;
 	}
+
+	public function sendEmail($subject, $html, $emails){
+		$m = new SimpleEmailServiceMessage();
+		foreach($emails as $email){
+			$m->addTo($email);
+		}
+		$m->setFrom(EMAIL_FROM);
+		$m->setSubject($subject);
+		$m->setMessageFromString("", $html);
+
+		$ses = new SimpleEmailService(SES_ACCESS_KEY, SES_SECRET_KEY);
+		return $ses->sendEmail($m);
+	}
 }
