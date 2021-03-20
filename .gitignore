@@ -1,5 +1,3 @@
 /sftp-config.json
-/includes/configs.php
-/includes/constants.php
 /plex-data/data.json
 .env
