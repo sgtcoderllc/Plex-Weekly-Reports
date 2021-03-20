@@ -14,6 +14,8 @@ define("SES_SECRET_KEY", $_ENV['SES_SECRET_KEY']);
 define("SES_REGION_ENDPOINT", $_ENV['SES_REGION_ENDPOINT']);
 define("EMAIL_FROM", $_ENV['EMAIL_FROM']);
 define("EMAIL_SUBJECT", $_ENV['EMAIL_SUBJECT'].' ('.date("Y-m-d").')');
+
+// Plex Email Info
 define("REPORT_TITLE", $_ENV['REPORT_TITLE']);
 define("REPORT_SUBTITLE", $_ENV['REPORT_SUBTITLE'].' ('.date("Y-m-d").')');
 
