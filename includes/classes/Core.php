@@ -122,7 +122,7 @@ class Core {
 		$m->setSubject($subject);
 		$m->setMessageFromString("", $html);
 
-		$ses = new SimpleEmailService(SES_ACCESS_KEY, SES_SECRET_KEY);
+		$ses = new SimpleEmailService(SES_ACCESS_KEY, SES_SECRET_KEY, SES_REGION_ENDPOINT);
 		return $ses->sendEmail($m);
 	}
 }
