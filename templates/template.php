@@ -25,9 +25,9 @@
                                 <td>
                                     <div class="text" style="padding: 0 4em; text-align: center;">
                                         <h2>
-                                            {{report_title}}<br />
-                                            <span style="font-size: 50%;color:#fff;">{{report_subtitle}}</span><br />
-                                            <span style="font-size: 50%;color:#fff;">By MJB Code LLC</span>
+                                            <span style="font-size: 80%;color:#fff;">{{report_title}}</span><br />
+                                            <span style="font-size: 40%;color:#fff;">{{report_subtitle}}</span><br />
+                                            <span style="font-size: 40%;color:#fff;">By MJB Code LLC</span>
                                         </h2>
                                     </div>
                                 </td>
@@ -43,7 +43,7 @@
                 <tr>
                     <td class="bg_white email-section">
                         <div class="heading-section bg_light" style="text-align: center; padding: 30px 30px 1px 30px; border:2px solid black;">
-                            <h2>New Movies</h2>
+                            <h2><span style="font-size: 80%;">New Movies</span></h2>
                         </div>
                     </td>
                 </tr>
@@ -57,7 +57,7 @@
                 <tr>
                     <td class="bg_white email-section">
                         <div class="heading-section bg_light" style="text-align: center; padding: 30px 30px 1px 30px; border:2px solid black;">
-                            <h2>New TV Shows</h2>
+                            <h2><span style="font-size: 80%;">New TV Shows</span></h2>
                         </div>
                     </td>
                 </tr>
@@ -79,11 +79,11 @@
                                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                                         <tr>
                                             <td style="text-align: left; padding-left: 50px;">
-                                                <h1 class="heading">Summary</h2>
+                                                <h3 class="heading"><span style="font-size: 80%;">Summary</span></h3>
                                                 <p>
                                                     <ul>
-                                                        <li style="color: #fff;"><strong>Last Updated:</strong> {{last_updated}}</li>
-                                                        <li style="color: #fff;"><strong>Duration:</strong> {{duration}} minutes</li>
+                                                        <li style="color: #fff;"><strong>Last Updated:</strong><br />{{last_updated}}</li>
+                                                        <li style="color: #fff;"><strong>Duration:</strong><br />{{duration}} minutes</li>
                                                     </ul>
                                                 </p>
                                             </td>
@@ -94,7 +94,7 @@
                                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                                         <tr>
                                             <td style="text-align: right; padding-right: 50px;">
-                                                <h2 class="heading">Credits</h2>
+                                                <h3 class="heading"><span style="font-size: 80%;">Credits</span></h3>
                                                 <p>
                                                     <ul>
                                                         <li><a href="https://www.themoviedb.org/" target="_blank">The Movie DB</a></li>
@@ -119,7 +119,7 @@
                                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                                         <tr>
                                             <td style="text-align: left; padding-right: 10px;">
-                                                <center><p>&copy; 2020 MJB Code LLC. All Rights Reserved</p></center>
+                                                <center><p>&copy; 2021 MJB Code LLC. All Rights Reserved</p></center>
                                             </td>
                                         </tr>
                                     </table>

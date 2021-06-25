@@ -12,6 +12,8 @@ $html = file_get_contents(PLEX_REPORT_URL);
 $emails = $Core->getPlexEmails();
 $subject = EMAIL_SUBJECT;
 
-$Core->sendEmail($subject, $html, $emails);
+foreach($emails as $email){
+	$Core->sendEmail($subject, $html, $email);
+}
 
 echo 'complete';
