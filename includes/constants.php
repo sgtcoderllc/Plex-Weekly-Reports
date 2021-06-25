@@ -17,7 +17,7 @@ define("EMAIL_SUBJECT", $_ENV['EMAIL_SUBJECT'].' ('.date("Y-m-d").')');
 
 // Plex Email Info
 define("REPORT_TITLE", $_ENV['REPORT_TITLE']);
-define("REPORT_SUBTITLE", $_ENV['REPORT_SUBTITLE'].' ('.date("Y-m-d").')');
+define("REPORT_SUBTITLE", $_ENV['REPORT_SUBTITLE'].'<br />('.date("Y-m-d").')');
 
 // PLEX
 define("PLEX_API_KEY", $_ENV['PLEX_API_KEY']);
