@@ -114,6 +114,8 @@ class Core {
 	}
 
 	public function sendEmail($subject, $html, $emails){
+		$emails = (is_array($emails)) ? $emails : [$emails];
+		
 		$m = new SimpleEmailServiceMessage();
 		foreach($emails as $email){
 			$m->addTo($email);
