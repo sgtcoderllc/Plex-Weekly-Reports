@@ -34,10 +34,5 @@ $scheduler
 	->output(LOG_PATH.'/'.LOG_PREFIX.'plex_stats.log')
 	->at('0 8 * * 5');
 
-
-exec_plex();
-email_plex();
-
-
 // Let the scheduler execute jobs which are due.
 $scheduler->run();
