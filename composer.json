@@ -2,10 +2,11 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.3|^7.4|^8.0",
+        "php": "^7.4|^8.0",
         "daniel-zahariev/php-aws-ses": "0.9.*",
         "kriswallsmith/buzz": "1.2.*",
         "nyholm/psr7": "1.4.*",
+        "peppeocchi/php-cron-scheduler": "4.0.*",
         "symfony/dotenv": "5.2.*"
     }
 }

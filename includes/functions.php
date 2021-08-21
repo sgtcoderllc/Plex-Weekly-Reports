@@ -1,24 +1,26 @@
 <?php
-require_once("includes/common.php");
 
+function exec_plex(){
+	$timer_start = microtime(true);
+	$plex_export_version = 1;
+	ini_set('memory_limit', '512M');
+	set_error_handler('plex_error_handler');
+	error_reporting(E_ALL ^ E_NOTICE | E_WARNING);
 
-$timer_start = microtime(true);
-$plex_export_version = 1;
-ini_set('memory_limit', '512M');
-set_error_handler('plex_error_handler');
-error_reporting(E_ALL ^ E_NOTICE | E_WARNING);
+	$Core = new Core;
 
-
-// Set-up
+	// Set-up
 	$defaults = array(
 		'plex-url' => 'http://localhost:32400',
-		'data-dir' => 'plex-data',
+		'data-dir' => '../plex-data',
 		'thumbnail-width' => 150,
 		'thumbnail-height' => 250,
 		'sections' => 'all',
 		'sort-skip-words' => 'a,the,der,die,das',
 		'token' => ''
 	);
+
+	global $options;
 	$options = hl_parse_arguments($options, $defaults);
 	
 	if(substr($options['plex-url'],-1)!='/') $options['plex-url'] .= '/'; // Always have a trailing slash
@@ -26,16 +28,13 @@ error_reporting(E_ALL ^ E_NOTICE | E_WARNING);
 	$options['sort-skip-words'] = (array) explode(',', $options['sort-skip-words']); # comma separated list of words to skip for sorting titles
 	
 	// Create the http header with a X-Plex-Token in it	if specified
-	
 	if (strlen($options['token']) == 0){
 		$headers = array(
 			'http'=>array(
     	'method'=>"GET"                 
 			)
 		);
-	}
-	else
-	{
+	} else {
 		$headers = array(
 		'http'=>array(
 		  'method'=>"GET",
@@ -44,26 +43,24 @@ error_reporting(E_ALL ^ E_NOTICE | E_WARNING);
 		);
 	}
 
+	global $context;
 	$context = stream_context_create($headers);
 	
 	check_dependancies(); // Check everything is enabled as necessary
 
 
-// Load details about all sections
+	// Load details about all sections
 	$all_sections = load_all_sections();
 	if(!$all_sections) {
 		plex_error('Could not load section data, aborting');
 		exit();
 	}
 
-
-// If user wants to show all (supported) sections...
+	// If user wants to show all (supported) sections...
 	if($options['sections'] == 'all') {
 		$sections = $all_sections;
 	} else {
-
-
-// Otherwise, match sections by Title first, then ID
+		// Otherwise, match sections by Title first, then ID
 		$sections_to_show = array_filter(explode(',',$options['sections']));
 				
 		$section_titles = array();
@@ -91,7 +88,7 @@ error_reporting(E_ALL ^ E_NOTICE | E_WARNING);
 	} // end if: !all sections
 
 
-// If no sections found (or matched)
+	// If no sections found (or matched)
 	$num_sections = count($sections);
 	if($num_sections==0) {
 		plex_error('No sections were found to scan');
@@ -99,7 +96,7 @@ error_reporting(E_ALL ^ E_NOTICE | E_WARNING);
 	}
 
 
-// Load details about each section
+	// Load details about each section
 	$total_items = 0;
 	foreach($sections as $i=>$section) {
 		plex_log('Scanning section: '.$section['title']);
@@ -167,7 +164,7 @@ error_reporting(E_ALL ^ E_NOTICE | E_WARNING);
 
 
 
-// Added to grab additional info and cleanup
+	// Added to grab additional info and cleanup
 	$new_movies = $sections['movie']['items'];
 	$new_shows = $sections['show']['items'];
 
@@ -175,66 +172,66 @@ error_reporting(E_ALL ^ E_NOTICE | E_WARNING);
 	$shows_array = array();
 
 
-if(count($new_movies)>0){
-	foreach($new_movies as $movie){
-		$movie_info = $Core->getMovieInfo($movie['movie_id']);
-		
-		$array_map = array(
-			'title'=>$movie_info['title']?:$movie['title'],
-			'year'=>$movie_info['year'],
-			'genre'=>$movie_info['genre'],
-			'director'=>$movie_info['director'],
-			'actors'=>$movie_info['actors'],
-			'synopsis'=>$movie_info['synopsis'],
-			'runtime'=>$movie_info['runtime'],
-			'released'=>$movie_info['released'],
-			'rating'=>$movie_info['rating'],
-			'imdb_rating'=>$movie_info['imdb_rating'],
-			'rating'=>$movie_info['rating'],
-			'imdb_votes'=>$movie_info['imdb_votes'],
-			'image'=>$movie_info['image'],
-			'imdb_link'=>$movie_info['imdb'],
-		);
-		
-		$movies_array[] = $array_map;
-	}
-}
-
-if(count($new_shows)>0){
-	foreach($new_shows as $show_key=>$show){
-		$episodes_text = array();
-
-		foreach($show['seasons'] as $season_id=>$season){
-			$episodes_text[$season_id]=$season['title'].' (E'.implode(", E", array_values(array_column($season['episodes'], 'index'))).')';
+	if(count($new_movies)>0){
+		foreach($new_movies as $movie){
+			$movie_info = $Core->getMovieInfo($movie['movie_id']);
+			
+			$array_map = array(
+				'title'=>$movie_info['title']?:$movie['title'],
+				'year'=>$movie_info['year'],
+				'genre'=>$movie_info['genre'],
+				'director'=>$movie_info['director'],
+				'actors'=>$movie_info['actors'],
+				'synopsis'=>$movie_info['synopsis'],
+				'runtime'=>$movie_info['runtime'],
+				'released'=>$movie_info['released'],
+				'rating'=>$movie_info['rating'],
+				'imdb_rating'=>$movie_info['imdb_rating'],
+				'rating'=>$movie_info['rating'],
+				'imdb_votes'=>$movie_info['imdb_votes'],
+				'image'=>$movie_info['image'],
+				'imdb_link'=>$movie_info['imdb'],
+			);
+			
+			$movies_array[] = $array_map;
 		}
-		
-		$episodes_text = implode(", ", $episodes_text);
-		$episode_info = $Core->getShowInfo($show['show_id']);
-		
-		$array_map = array(
-			'title'=>$episode_info['title'],
-			'year'=>$episode_info['year'],
-			'genre'=>$episode_info['genre'],
-			'director'=>$episode_info['director'],
-			'actors'=>$episode_info['actors'],
-			'synopsis'=>$episode_info['synopsis'],
-			'runtime'=>$episode_info['runtime'],
-			'released'=>$episode_info['released'],
-			'rating'=>$episode_info['rating'],
-			'imdb_rating'=>$episode_info['imdb_rating'],
-			'rating'=>$episode_info['rating'],
-			'imdb_votes'=>$episode_info['imdb_votes'],
-			'image'=>$episode_info['image'],
-			'episodes_text'=>$episodes_text,
-			'imdb_link'=>$episode_info['imdb'],
-		);
-		
-		$shows_array[] = $array_map;
 	}
-}
+
+	if(count($new_shows)>0){
+		foreach($new_shows as $show_key=>$show){
+			$episodes_text = array();
+
+			foreach($show['seasons'] as $season_id=>$season){
+				$episodes_text[$season_id]=$season['title'].' (E'.implode(", E", array_values(array_column($season['episodes'], 'index'))).')';
+			}
+			
+			$episodes_text = implode(", ", $episodes_text);
+			$episode_info = $Core->getShowInfo($show['show_id']);
+			
+			$array_map = array(
+				'title'=>$episode_info['title'],
+				'year'=>$episode_info['year'],
+				'genre'=>$episode_info['genre'],
+				'director'=>$episode_info['director'],
+				'actors'=>$episode_info['actors'],
+				'synopsis'=>$episode_info['synopsis'],
+				'runtime'=>$episode_info['runtime'],
+				'released'=>$episode_info['released'],
+				'rating'=>$episode_info['rating'],
+				'imdb_rating'=>$episode_info['imdb_rating'],
+				'rating'=>$episode_info['rating'],
+				'imdb_votes'=>$episode_info['imdb_votes'],
+				'image'=>$episode_info['image'],
+				'episodes_text'=>$episodes_text,
+				'imdb_link'=>$episode_info['imdb'],
+			);
+			
+			$shows_array[] = $array_map;
+		}
+	}
 
 
-// Output all data
+	// Output all data
 	$duration = microtime(true) - $timer_start;
 	$duration = round(($duration/60),2);
 
@@ -261,11 +258,22 @@ if(count($new_shows)>0){
 	}
 
 	plex_log('Plex Export completed in '.$duration.' minutes');
+}
 
+function email_plex(){
+	// Get the html report
+	$html = file_get_contents(PLEX_REPORT_URL);
 
-// Methods //////////////////////////////////////////////////////////////
+	// get emails
+	$Core = new Core;
 
+	$emails = $Core->getPlexEmails();
+	$subject = EMAIL_SUBJECT;
 
+	foreach($emails as $email){
+		$Core->sendEmail($subject, $html, $email);
+	}
+}
 
 /**
  * Parse a Movie
@@ -520,7 +528,6 @@ function load_items_for_section($section) {
  * Load URL and parse as XML
  **/
 function load_xml_from_url($url) {
-
 	global $options;
 	global $context;
 	

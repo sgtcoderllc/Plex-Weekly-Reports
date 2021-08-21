@@ -7,6 +7,8 @@ $dotenv->load(__DIR__.'/../.env');
 // Globals
 date_default_timezone_set($_ENV['TIMEZONE']);
 define('APP_URL', $_ENV['APP_URL']);
+define("ABSPATH", dirname(__DIR__).'/');
+define("LOG_PREFIX", $_ENV['LOG_PREFIX']);
 
 // Email
 define("SES_ACCESS_KEY", $_ENV['SES_ACCESS_KEY']);

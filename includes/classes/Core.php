@@ -100,15 +100,17 @@ class Core {
 		$friends = $this->getXMLObject("https://plex.tv/api/users/");
 		$friends = $friends->User;
 
-		$emails=array();
-		
+		$emails=[];
 		foreach($friends as $friend){
 			$emails[] = (string)$friend->attributes()->email;
 		}
 
-		//add your own email
+		// add your own email
 		$account = $this->getXMLObject("https://plex.tv/users/account/?X-Plex-Token=".PLEX_API_KEY);
 		$emails[] = (string)$account->attributes()->email;
+
+		// Override for Test
+		//$emails = [(string)$account->attributes()->email];
 
 		return $emails;
 	}

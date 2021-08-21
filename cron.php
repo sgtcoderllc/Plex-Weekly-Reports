@@ -1,19 +1,43 @@
 <?php
+// * * * * * /usr/local/bin/php $HOME/public_html/cron.php >$HOME/plex_cron.log 2>&1
 
 require_once("includes/common.php");
 
-// Generate the json
-require_once("generate_plex.php");
-
-// Get the html report
-$html = file_get_contents(PLEX_REPORT_URL);
-
-// get emails
-$emails = $Core->getPlexEmails();
-$subject = EMAIL_SUBJECT;
-
-foreach($emails as $email){
-	$Core->sendEmail($subject, $html, $email);
+// CRON LOG PATH
+define('LOG_PATH', ABSPATH.'../cron_logs');
+if(!file_exists(LOG_PATH)){
+	mkdir(LOG_PATH);
 }
 
-echo 'complete';
+// CRON LOCK PATH
+define('LOCK_PATH', ABSPATH.'../cron_locks');
+if(!file_exists(LOCK_PATH)){
+	mkdir(LOCK_PATH);
+}
+
+use GO\Scheduler;
+
+// Create a new scheduler
+$scheduler = new Scheduler([
+    'tempDir' => LOCK_PATH
+]);
+
+
+// CRON JOB For Email Stats
+$scheduler
+	->call(function () {
+		exec_plex();
+		email_plex();
+
+	    return "Complete";
+	})
+	->output(LOG_PATH.'/'.LOG_PREFIX.'plex_stats.log')
+	->at('0 8 * * 5');
+
+
+exec_plex();
+email_plex();
+
+
+// Let the scheduler execute jobs which are due.
+$scheduler->run();
