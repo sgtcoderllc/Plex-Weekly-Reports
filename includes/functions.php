@@ -119,11 +119,10 @@ function exec_plex(){
 			$total_items += $num_items;	
 		}
 
-		$sorts_title = $sorts_release = $sorts_rating = $sorts_added_at = array();
+		$sorts_title = $sorts_release = $sorts_added_at = array();
 		$raw_section_genres = array();
 
 		foreach($items as $key=>$item) {
-			
 			$title_sort = strtolower($item['title']);
 			$title_first_space = strpos($title_sort, ' ');
 			if($title_first_space>0) {
@@ -134,7 +133,6 @@ function exec_plex(){
 			}
 			$sorts_title[$key] = $title_sort;
 			$sorts_release[$key] = @strtotime($item['release_date']);
-			$sorts_rating[$key] = ($item['user_rating'])?$item['user_rating']:$item['rating'];
 			if(is_array($item['genre']) and count($item['genre'])>0) {
 				foreach($item['genre'] as $genre) {
 					$raw_section_genres[$genre]++;
@@ -174,26 +172,14 @@ function exec_plex(){
 
 	if(count($new_movies)>0){
 		foreach($new_movies as $movie){
-			$movie_info = $Core->getMovieInfo($movie['movie_id']);
-			
-			$array_map = array(
-				'title'=>$movie_info['title']?:$movie['title'],
-				'year'=>$movie_info['year'],
-				'genre'=>$movie_info['genre'],
-				'director'=>$movie_info['director'],
-				'actors'=>$movie_info['actors'],
-				'synopsis'=>$movie_info['synopsis'],
-				'runtime'=>$movie_info['runtime'],
-				'released'=>$movie_info['released'],
-				'rating'=>$movie_info['rating'],
-				'imdb_rating'=>$movie_info['imdb_rating'],
-				'rating'=>$movie_info['rating'],
-				'imdb_votes'=>$movie_info['imdb_votes'],
-				'image'=>$movie_info['image'],
-				'imdb_link'=>$movie_info['imdb'],
-			);
-			
-			$movies_array[] = $array_map;
+			$media_info = $Core->getMediaInfo($movie['imdb']);
+
+			$movie['image'] = $media_info['image'];
+			$movie['imdb_rating'] = $media_info['imdb_rating'];
+			$movie['runtime'] = $media_info['runtime'];
+			$movie['director'] = $media_info['director'];
+
+			$movies_array[] = $movie;
 		}
 	}
 
@@ -206,30 +192,19 @@ function exec_plex(){
 			}
 			
 			$episodes_text = implode(", ", $episodes_text);
-			$episode_info = $Core->getShowInfo($show['show_id']);
+			$media_info = $Core->getMediaInfo($show['imdb']);
 			
-			$array_map = array(
-				'title'=>$episode_info['title'],
-				'year'=>$episode_info['year'],
-				'genre'=>$episode_info['genre'],
-				'director'=>$episode_info['director'],
-				'actors'=>$episode_info['actors'],
-				'synopsis'=>$episode_info['synopsis'],
-				'runtime'=>$episode_info['runtime'],
-				'released'=>$episode_info['released'],
-				'rating'=>$episode_info['rating'],
-				'imdb_rating'=>$episode_info['imdb_rating'],
-				'rating'=>$episode_info['rating'],
-				'imdb_votes'=>$episode_info['imdb_votes'],
-				'image'=>$episode_info['image'],
-				'episodes_text'=>$episodes_text,
-				'imdb_link'=>$episode_info['imdb'],
-			);
+			$show['image'] = $media_info['image'];
+			$show['imdb_rating'] = $media_info['imdb_rating'];
+			$show['runtime'] = $media_info['runtime'];
+			$show['director'] = $media_info['director'];
+
+
+			$show['episodes_text'] = $episodes_text;
 			
-			$shows_array[] = $array_map;
+			$shows_array[] = $show;
 		}
 	}
-
 
 	// Output all data
 	$duration = microtime(true) - $timer_start;
@@ -279,7 +254,6 @@ function email_plex(){
  * Parse a Movie
  **/
 function load_data_for_movie($el) {
-
 	global $options;
 	global $context;
 
@@ -292,37 +266,77 @@ function load_data_for_movie($el) {
 	$added_at = date("Y-m-d H:i:s", strval($_el->addedAt));
 	if(!($added_at>= date("Y-m-d H:i:s", strtotime("-1 week")))) return array();
 	
-	$movie_id = (string)$_el->guid;
-	$movie_id = preg_replace('/com.plexapp.agents.themoviedb:\/\//', '',$movie_id);
-	$movie_id = explode("?", $movie_id);
-	$movie_id = $movie_id[0];	
+	$url = $options['plex-url'].'library/metadata/'.$key;
+	$xml = load_xml_from_url($url)->Video;
+
+	$guids = [];
+	foreach($xml->xpath('Guid') as $path) {
+		$guid = strval($path->attributes()->id);
+
+		if(strpos($guid, 'imdb://')!==FALSE){
+			$re = '/^imdb:\/\/(?<id>.+)/';
+			preg_match($re, $guid, $matches);
+
+			// Print the entire match result
+			$guids['imdb'] = $matches['id'] ?? false;
+		}
+
+		if(strpos($guid, 'tmdb://')!==FALSE){
+			$re = '/^tmdb:\/\/(?<id>.+)/';
+			preg_match($re, $guid, $matches);
+
+			// Print the entire match result
+			$guids['tmdb'] = $matches['id'] ?? false;
+		}
+
+		if(strpos($guid, 'tvdb://')!==FALSE){
+			$re = '/^tvdb:\/\/(?<id>.+)/';
+			preg_match($re, $guid, $matches);
+
+			// Print the entire match result
+			$guids['tvdb'] = $matches['id'] ?? false;
+		}
+	}
+
+	$genres = [];
+	foreach($xml->xpath('Genre') as $path) {
+	    $genres[] = strval($path->attributes()->tag);
+	}
+
+	$directors = [];
+	foreach($xml->xpath('Director') as $path) {
+	    $directors[] = strval($path->attributes()->tag);
+	}
+
+	$actors = [];
+	foreach($xml->xpath('Role') as $path) {
+		if(count($actors)>5) break;
+
+	    $actors[] = strval($path->attributes()->tag);
+	}
 
 	$item = array(
 		'key' => $key,
-		'movie_id' => $movie_id,
 		'type' => 'movie',
-		'title' => $title,
-		'duration' => floatval($_el->duration),
-		'view_count' => intval($_el->viewCount),
-		'tagline' => ($_el->tagline)?strval($_el->tagline):false,
-		'rating' => ($_el->rating)?floatval($_el->rating):false,
-		'user_rating' => ($_el->userRating)?floatval($_el->userRating):false,
-		'release_year' => ($_el->year)?intval($_el->year):false,
-		'release_date' => ($_el->originallyAvailableAt)?strval($_el->originallyAvailableAt):false,
-		'addedAt' => false,
-		'content_rating' => ($_el->contentRating)?strval($_el->contentRating):false,
-		'summary' => ($_el->summary)?strval($_el->summary):false,
-		'studio' => ($_el->studio)?strval($_el->studio):false,
+		'addedAt' => intval($xml->attributes()->addedAt),
+
+		'title'=>strval($_el->title),
+		'year'=>($_el->year)?intval($_el->year):NULL,
+		'genre'=>($genres) ? implode(', ', $genres) : NULL,
+		'director'=>($directors) ? implode(', ', $directors) : NULL,
+		'actors'=>($actors) ? implode(', ', $actors) : NULL,
+		'synopsis'=>($_el->summary)?strval($_el->summary):NULL,
+		'runtime'=>NULL,
+		'released'=>($_el->originallyAvailableAt)?date('m/d/Y', strtotime(strval($_el->originallyAvailableAt))):NULL,
+		'rating' => ($_el->contentRating)?strval($_el->contentRating):false,
+		
+		'image'=>NULL,
+		'imdb_link'=>($guids['imdb']) ? 'https://www.imdb.com/title/'.$guids['imdb'] : NULL,
+
+		'imdb'=>$guids['imdb'] ?? NULL,
+		'tmdb'=>$guids['tmdb'] ?? NULL,
+		'tvdb'=>$guids['tvdb'] ?? NULL,
 	);
-
-	$url = $options['plex-url'].'library/metadata/'.$key;
-	$xml = load_xml_from_url($url);
-	if(!$xml) {
-		plex_error('Could not load additional metadata for '.$title);
-		return $item;
-	}
-
-	$item['addedAt']=intval($xml->Video->attributes()->addedAt);
 
 	return $item;
 
@@ -334,7 +348,6 @@ function load_data_for_movie($el) {
  * Parse a TV Show
  **/
 function load_data_for_show($el) {
-
 	global $options;
 
 	$_el = $el->attributes();
@@ -343,35 +356,81 @@ function load_data_for_show($el) {
 	$title = strval($_el->title);
 	plex_log('Scanning show: '.$title);
 
-	$show_id = (string)$_el->guid;
-	$show_id = preg_replace('/com.plexapp.agents.thetvdb:\/\//', '',$show_id);
-	$show_info = explode("?", $show_id);
-	$show_info = $show_info[0];
-	$show_info = explode("/", $show_info);
-	$show_id = $show_info[0];
+	$url = $options['plex-url'].'library/metadata/'.$key;
+	$xml = load_xml_from_url($url)->Directory;
 	
+	$guids = [];
+	foreach($xml->xpath('Guid') as $path) {
+		$guid = strval($path->attributes()->id);
+
+		if(strpos($guid, 'imdb://')!==FALSE){
+			$re = '/^imdb:\/\/(?<id>.+)/';
+			preg_match($re, $guid, $matches);
+
+			// Print the entire match result
+			$guids['imdb'] = $matches['id'] ?? false;
+		}
+
+		if(strpos($guid, 'tmdb://')!==FALSE){
+			$re = '/^tmdb:\/\/(?<id>.+)/';
+			preg_match($re, $guid, $matches);
+
+			// Print the entire match result
+			$guids['tmdb'] = $matches['id'] ?? false;
+		}
+
+		if(strpos($guid, 'tvdb://')!==FALSE){
+			$re = '/^tvdb:\/\/(?<id>.+)/';
+			preg_match($re, $guid, $matches);
+
+			// Print the entire match result
+			$guids['tvdb'] = $matches['id'] ?? false;
+		}
+	}
+
+	$genres = [];
+	foreach($xml->xpath('Genre') as $path) {
+	    $genres[] = strval($path->attributes()->tag);
+	}
+
+	$directors = [];
+	foreach($xml->xpath('Director') as $path) {
+	    $directors[] = strval($path->attributes()->tag);
+	}
+
+	$actors = [];
+	foreach($xml->xpath('Role') as $path) {
+		if(count($actors)>5) break;
+
+	    $actors[] = strval($path->attributes()->tag);
+	}
+
 	$item = array(
 		'key' => $key,
-		'show_id' => $show_id,
 		'type' => 'show',
-		'title' => $title,
-		'rating' => ($_el->rating)?floatval($_el->rating):false,
-		'user_rating' => ($_el->userRating)?floatval($_el->userRating):false,
-		'release_year' => ($_el->year)?intval($_el->year):false,
-		'release_date' => ($_el->originallyAvailableAt)?strval($_el->originallyAvailableAt):false,
-		'duration' => floatval($_el->duration),
-		'content_rating' => ($_el->contentRating)?strval($_el->contentRating):false,
-		'summary' => ($_el->summary)?strval($_el->summary):false,
-		'studio' => ($_el->studio)?strval($_el->studio):false,
-		'tagline' => false,
-		'num_episodes' => intval($_el->leafCount),
-		'num_seasons' => false,
-		'seasons' => array()
-	);
+		'addedAt' => NULL,
 
-	$genres = array();
-	foreach($el->Genre as $genre) $genres[] = strval($genre->attributes()->tag);
-	if(count($genres)>0) $item['genre'] = $genres;
+		'title'=>strval($_el->title),
+		'year'=>($_el->year)?intval($_el->year):NULL,
+		'genre'=>($genres) ? implode(', ', $genres) : NULL,
+		'director'=>($directors) ? implode(', ', $directors) : NULL,
+		'actors'=>($actors) ? implode(', ', $actors) : NULL,
+		'synopsis'=>($_el->summary)?strval($_el->summary):NULL,
+		'runtime'=>NULL,
+		'released'=>($_el->originallyAvailableAt)?date('m/d/Y', strtotime(strval($_el->originallyAvailableAt))):NULL,
+		'rating' => ($_el->contentRating)?strval($_el->contentRating):NULL,
+		
+		'image'=>NULL,
+		'imdb_link'=>($guids['imdb']??NULL) ? 'https://www.imdb.com/title/'.$guids['imdb'] : NULL,
+
+		'imdb'=>$guids['imdb'] ?? NULL,
+		'tmdb'=>$guids['tmdb'] ?? NULL,
+		'tvdb'=>$guids['tvdb'] ?? NULL,
+
+		'num_episodes' => intval($_el->leafCount),
+		'num_seasons' => NULL,
+		'seasons' => [],
+	);
 	
 	$url = $options['plex-url'].'library/metadata/'.$key.'/children';
 	$xml = load_xml_from_url($url);
@@ -431,8 +490,9 @@ function load_data_for_show($el) {
 	
 	if(empty($item['num_seasons'])) return array();
 	
-	return $item;
+	$item['addedAt'] = intval($xml->attributes()->addedAt);
 
+	return $item;
 } // end func: load_data_for_show
 
 
@@ -440,7 +500,6 @@ function load_data_for_show($el) {
  * Load all supported sections from given Plex API endpoint
  **/
 function load_all_sections() {
-
 	global $options;
 	$url = $options['plex-url'].'library/sections';
 

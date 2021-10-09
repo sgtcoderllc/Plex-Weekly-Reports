@@ -31,69 +31,26 @@ class Core {
 	
 	public function replaceMappings($body, $mappings){
 		foreach($mappings as $key=>$value){
-			$body=str_replace('{{'.$key.'}}', $value, $body);
+			if(!is_array($value)){
+				$body=str_replace('{{'.$key.'}}', $value, $body);
+			}
 		}
 		return $body;
 	}
 
-	public function getMovieInfo($movie_id){
-	   	$movie_url = 'https://api.themoviedb.org/3/movie/'.$movie_id.'?api_key='.MOVIEDB_KEY;
-	   	$movie = json_decode(@file_get_contents($movie_url), TRUE);
-
-	   	$omdb_url = 'https://www.omdbapi.com/?i='.$movie['imdb_id'].'&apikey='.OMDB_KEY.'&plot=short&r=json';
-	   	$omdb_result = json_decode(@file_get_contents($omdb_url), TRUE);
-
-	   	$data_return = array(
-	   		'id'			=> $movie['id'],
-	   		'title'			=> $movie['title'],
-	   		'image'			=> "https://image.tmdb.org/t/p/w154".$movie['poster_path'],
-	   		'year'			=> $omdb_result['Year'],
-	   		'tagline'		=> $movie['tagline'],
-	   		'synopsis'		=> $movie['overview'],
-	   		'runtime'		=> $movie['runtime'],
-	   		'imdb'			=> "http://www.imdb.com/title/".$movie['imdb_id'],
-			'imdb_rating' 	=> $omdb_result['imdbRating'],
-	        'imdb_votes'  	=> $omdb_result['imdbVotes'],
-	        'director'    	=> $omdb_result['Director'],
-	        'actors'      	=> $omdb_result['Actors'],
-	        'genre'      	=> $omdb_result['Genre'],
-	        'released'    	=> $omdb_result['Released'],
-	        'rating'      	=> $omdb_result['Rated'],
-	   	);
-
-	   	return $data_return;
-	}
-
-	public function getShowInfo($show_id){
-	   	$tv_url = 'https://thetvdb.com/api/'.TVDB_KEY.'/series/'.$show_id;
-
-		$tv_show = $this->getXMLObject($tv_url);
-
-		$tv_show = (array) $tv_show->Series;
-	   	
-	   	$omdb_url = 'https://www.omdbapi.com/?i='.$tv_show['IMDB_ID'].'&apikey='.OMDB_KEY.'&plot=short&r=json';
+	public function getMediaInfo($imdb_id){
+		$config = new \Imdb\Config();
+		$imdb = new \Imdb\Title($imdb_id, $config);
 		
-	   	$omdb_result = json_decode(@file_get_contents($omdb_url), TRUE);
+		$media_info = [
+			'title'=>$imdb->title(),
+			'image'=>$imdb->photo(),
+			'imdb_rating'=>$imdb->rating().'/10',
+			'runtime'=>$imdb->runtime(),
+			'director'=>implode(', ', array_column($imdb->director(), 'name')),
+		];
 
-	   	$data_return = array(
-	   		'id'			=> $tv_show['id'],
-	   		'title'			=> $tv_show['SeriesName'],
-	   		'image'			=> "https://thetvdb.com/banners/".$tv_show['poster'],
-	   		'year'			=> $omdb_result['Year'],
-	   		'tagline'		=> $tv_show['Overview'],
-	   		'synopsis'		=> $tv_show['Overview'],
-	   		'runtime'		=> $tv_show['Runtime'],
-	   		'imdb'			=> "https://www.imdb.com/title/".$tv_show['IMDB_ID'],
-			'imdb_rating' 	=> $omdb_result['imdbRating'],
-	        'imdb_votes'  	=> $omdb_result['imdbVotes'],
-	        'director'    	=> $omdb_result['Director'],
-	        'actors'      	=> $omdb_result['Actors'],
-	        'genre'      	=> $omdb_result['Genre'],
-	        'released'    	=> $omdb_result['Released'],
-	        'rating'      	=> $omdb_result['Rated'],
-	   	);
-
-	   	return $data_return;
+		return $media_info;
 	}
 
 	public function getPlexEmails(){
