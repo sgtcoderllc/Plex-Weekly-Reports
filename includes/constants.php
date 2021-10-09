@@ -27,11 +27,6 @@ define("PLEX_URL", $_ENV['PLEX_URL']);
 define("PLEX_REPORT_URL", $_ENV['PLEX_REPORT_URL']);
 define("PLEX_SECTIONS", $_ENV['PLEX_SECTIONS']);
 
-// META DATABASE KEYS
-define("MOVIEDB_KEY", $_ENV['MOVIEDB_KEY']);
-define("TVDB_KEY", $_ENV['TVDB_KEY']);
-define("OMDB_KEY", $_ENV['OMDB_KEY']);
-
 // PLEX CLI OPTIONS
 $options=array(
 	'token'=>PLEX_API_KEY,
