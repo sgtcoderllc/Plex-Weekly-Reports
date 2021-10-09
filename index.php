@@ -10,6 +10,8 @@ $html_template = file_get_contents("templates/template.php");
 $shows_template = file_get_contents("templates/shows.php");
 $movies_template = file_get_contents("templates/movies.php");
 
+$movies_html = '';
+$shows_html = '';
 
 if(count($new_movies)>0){
 	foreach($new_movies as $key => $movie){
