@@ -36,3 +36,6 @@ $scheduler
 
 // Let the scheduler execute jobs which are due.
 $scheduler->run();
+
+//exec_plex();
+//email_plex();
