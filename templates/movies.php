@@ -16,7 +16,7 @@
 						<strong>Runtime:</strong> {{runtime}} mins.<br />
 						<strong>Release Date:</strong> {{released}}<br />
 						<strong>Rating:</strong> {{rating}}<br />
-						<strong>IMDB Rating:</strong> {{imdb_rating}}/10 from {{imdb_votes}}<br />
+						<strong>IMDB Rating:</strong> {{imdb_rating}}<br />
 					</p>
 	          	</div>
 	        </td>
